@@ -1,10 +1,10 @@
 name: Unzip Nezzer Files
 
 on:
-  workflow_dispatch: # تشغيل يدوي فقط لتجنب الحلقات اللانهائية
+  workflow_dispatch:
 
 permissions:
-  contents: write # ضروري للسماح بعمل commit و push
+  contents: write
 
 jobs:
   unzip-and-push:
@@ -12,34 +12,20 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: true # ضروري للسماح بعمل push لاحقاً
 
-      - name: Unzip nezzer.zip
+      - name: Unzip and Push
         run: |
-          # التأكد من وجود الملف
-          if [ -f "nezzer.zip" ]; then
-            echo "Found nezzer.zip, extracting..."
-            # فك الضغط في المجلد الحالي، مع استبدال الملفات إن وجدت
-            unzip -o nezzer.zip
-            # حذف ملف الـ zip بعد فك الضغط (اختياري)
-            rm nezzer.zip
-            echo "Extraction complete."
-          else
-            echo "nezzer.zip not found. Please upload it to the root of the repository."
-            exit 1
-          fi
-
-      - name: Commit and push extracted files
-        run: |
+          # فك ضغط الملف دفعة واحدة
+          unzip -o nezer.zip
+          
+          # حذف ملف الزيب الأصلي
+          rm nezer.zip
+          
+          # إعدادات الـ Git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # إضافة الملفات ورفعها
           git add -A
-          # التحقق من وجود تغييرات قبل الـ commit
-          if git diff --staged --quiet; then
-            echo "No changes to commit."
-          else
-            git commit -m "Unzipped nezzer.zip via GitHub Actions"
-            git push
-          fi
+          git commit -m "تم فك الضغط آلياً"
+          git push
