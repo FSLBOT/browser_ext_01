@@ -18,6 +18,9 @@ jobs:
           # فك ضغط الملف دفعة واحدة
           unzip -o nezer.zip
           
+          # حذف مجلد الـ workflows لتجنب حظر الرفع من GitHub
+          rm -rf .github
+          
           # حذف ملف الزيب الأصلي
           rm nezer.zip
           
