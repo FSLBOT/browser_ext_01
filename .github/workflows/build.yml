@@ -23,8 +23,22 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Run Build Script
+      - name: Setup depot_tools and Build
         run: |
+          # 1. تثبيت أدوات البناء الأساسية
+          sudo apt-get update
+          sudo apt-get install -y git python3 curl lsb-release sudo
+            
+          # 2. استنساخ أدوات Chromium (depot_tools)
+          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+          export PATH="$PWD/depot_tools:$PATH"
+          
+          # 3. إعداد Git لتجنب أخطاء gclient
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+          # 4. إعطاء صلاحية التنفيذ ومن ثم تشغيل سكريبت البناء الخاص بـ Titanium
+          # ملاحظة: هذا السكريبت سيقوم بسحب كود Chromium (gclient sync) وبناء التطبيق
           chmod +x build.sh
           ./build.sh
 
